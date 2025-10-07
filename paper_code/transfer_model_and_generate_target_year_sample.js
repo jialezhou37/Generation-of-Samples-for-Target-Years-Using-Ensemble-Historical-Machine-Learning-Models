@@ -80,7 +80,7 @@ step1:prepare 2023 featureImg
             var B111=image.float().select('B11').divide(10000).rename('B111')
             var B121=image.float().select('B12').divide(10000).rename('B121')
           return image.addBands(B61).addBands(B111).addBands(B121).addBands(NDVI).addBands(LSWI).addBands(NDSVI).addBands(NDTI).addBands(RENDVI).addBands(EVI).addBands(REP)
-        })//需要在此处更改一下EVI的计算方式，加上REP。看看分类效果
+        })
         
         
         var featureImg=S2_Interpol.select(['B61','B111','B121','NDVI','LSWI','NDSVI','NDTI','RENDVI','EVI','REP']).toBands().clip(studyArea)
@@ -154,14 +154,14 @@ var classification_2022_23=featureImg_2023.classify(classifier_2022,'Label')
                           
 var classification=classification_2022_23.add(classification_2021_23).add(classification_2020_23)
 
-var classification_1=classification.arrayArgmax()//arrayArgmax选取每个像素对应列表最大的那个值，变成只含有一个值的列表，并赋予该像素
+var classification_1=classification.arrayArgmax()
 var position1D = ee.Image([0]);
-var Index=classification_1.arrayGet(position1D)//arrayGet将每个像素由列表类型（List）转化为数值类型（Number）,但他的参数是一个像素为数值类型的图像
-var classification_2=classification.arrayGet(Index)//classification_2即为选取列表中概率最大的值赋予像素后的结果，每个像素的值为数值类型（Number）
+var Index=classification_1.arrayGet(position1D)
+var classification_2=classification.arrayGet(Index)
 var class_3=ee.Image([3]).clip(studyArea).updateMask(Cropland).rename('Label')
 var image_threshold=ee.Image([2.1]).clip(studyArea).updateMask(Cropland).rename('Label')
 var Probability_result=classification_2
-var class_result=Index.where(Probability_result.lte(image_threshold),class_3)//class_result这个图是专门用来给所有样本一个新标签的，值大于70的赋予对应index图像的值，值小于70的赋予值3
+var class_result=Index.where(Probability_result.lte(image_threshold),class_3)
 var othercrop_probablity=Probability_result.updateMask(class_result.eq(0)).multiply(0).int().rename('Label')
 var maize_probablity=Probability_result.updateMask(class_result.eq(1)).multiply(0).add(1).int().rename('Label')
 var soybean_probablity=Probability_result.updateMask(class_result.eq(2)).multiply(0).add(2).int().rename('Label')
