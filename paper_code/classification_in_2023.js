@@ -116,27 +116,27 @@ step4:classifer2
 *********************************************************************************/
 
 var maizesample=featureImg_2023.sampleRegions({
-    collection:maizesample,
-    properties:['Label'],
-    scale:10,
-    tileScale:16,
-    geometries:true,
-})
-var maizesample_expand=featureImg_2023.sampleRegions({
-    collection:maizesample_expand,
+    collection:maizesample_2023,
     properties:['Label'],
     scale:10,
     tileScale:16,
     geometries:true,
 })
 var soybeansample=featureImg_2023.sampleRegions({
-    collection:soybeansample,
+    collection:soybeansample_2023,
     properties:['Label'],
     scale:10,
     tileScale:16,
     geometries:true,
-}).limit(500)
-var trainingSample_2023=maizesample.merge(soybeansample).merge(othercropsample).merge(maizesample_expand)
+})
+var othercropsample=featureImg_2023.sampleRegions({
+    collection:othercropsample_2023,
+    properties:['Label'],
+    scale:10,
+    tileScale:16,
+    geometries:true,
+})
+var trainingSample_2023=maizesample.merge(soybeansample).merge(othercropsample)
 var trainingFeature=featureBand
         
         
